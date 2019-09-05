@@ -17,7 +17,7 @@ NSSM must be installed on your machine (https://nssm.cc).
 Open windows command line as administrator (administrator permissions need to manage windows OS services). Execute JAR file `nano-db-manager-jar-with-dependencies.jar`  
  
 Backup example:  
-`java -jar ./nano-db-manager-jar-with-dependencies.jar backup nano-es nano-mongo "c:\development\es" "c:\development\mongo" "c:\development\backup-nano-db"`
+`java -jar ./nano-db-manager.jar backup nano-es nano-mongo "c:\development\es" "c:\development\mongo" "c:\development\backup-nano-db"`
 
 Restore latest example:  
-`java -jar ./nano-db-manager-jar-with-dependencies.jar restore nano-es nano-mongo "c:\development\es" "c:\development\mongo" "c:\development\backup-nano-db"`
+`java -jar ./nano-db-manager.jar restore nano-es nano-mongo "c:\development\es" "c:\development\mongo" "c:\development\backup-nano-db"`

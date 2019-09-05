@@ -41,7 +41,7 @@ public class WinBackupManager implements BackupManager {
 
         File eventStoreDatabaseBackupDir = resolveDatabaseBackupDirPath(eventStoreDatabaseDir);
         TimeTracker esTimeTracker = TimeTracker.start();
-        copyFolder(eventStoreDatabaseDir, eventStoreDatabaseBackupDir);
+        copyFolder(eventStoreDatabaseDir, eventStoreDatabaseBackupDir, eventStoreDatabaseDir + File.separator + "log");
         log("EventStore database directory " + eventStoreDatabaseDir + " copied to " + eventStoreDatabaseBackupDir, esTimeTracker);
 
         File mongoDatabaseBackupDir = resolveDatabaseBackupDirPath(mongoDatabaseDir);
@@ -122,8 +122,14 @@ public class WinBackupManager implements BackupManager {
     }
 
     private static void copyFolder(File src, File dest) throws IOException {
+        copyFolder(src, dest, null);
+    }
+
+    private static void copyFolder(File src, File dest, String skipDirectory) throws IOException {
 
         if (src.isDirectory()) {
+            if (skipDirectory != null && src.toString().startsWith(skipDirectory)) return;
+
             if (!dest.exists()) {
                 dest.mkdir();
                 //System.out.println("Directory copied from " + src + "  to " + dest);
@@ -134,7 +140,7 @@ public class WinBackupManager implements BackupManager {
                 File srcFile = new File(src, file);
                 File destFile = new File(dest, file);
 
-                copyFolder(srcFile, destFile);
+                copyFolder(srcFile, destFile, skipDirectory);
             }
 
         } else {

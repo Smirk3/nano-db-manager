@@ -11,6 +11,11 @@ import java.io.IOException;
 
 public class Application {
 
+    /*private static Params params = new Params(Action.BACKUP, new File("c:\\development\\backup-nano-db"),
+        new Database("nano-es", new File("c:\\development\\es")),
+        new Database("nano-mongo", new File("c:\\development\\mongo"))
+    );*/
+
     public static void main(String[] args) {
 
         Params params = parseArguments(args);
