@@ -19,7 +19,7 @@ You have to provide parameters:
 
 ## How to execute
 NSSM must be installed on your machine (https://nssm.cc).  
-Open windows command line as administrator (administrator permissions need to manage windows OS services). Execute JAR file `nano-db-manager-jar-with-dependencies.jar` (https://github.com/Smirk3/nano-db-manager/blob/master/target/nano-db-manager.jar)  
+Open windows command line as administrator (administrator permissions need to manage windows OS services). Execute JAR file `nano-db-manager.jar` (https://github.com/Smirk3/nano-db-manager/blob/master/target/nano-db-manager.jar)  
  
 Backup example:  
 `java -jar ./nano-db-manager.jar backup nano-es nano-mongo "c:\development\es" "c:\development\mongo" "c:\development\backup-nano-db"`
