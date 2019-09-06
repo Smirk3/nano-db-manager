@@ -9,7 +9,7 @@ You should backup first your current nano database state with "nano-db-manager" 
 ## Configuration
 This application provides executable JAR.  
   
-Yuo have to provide parameters:
+You have to provide parameters:
 1. action: BACKUP or RESTORE (RESTORE - restores latest found backup in backup directory)
 2. EventStore OS service name
 3. MongoDB OS service name
