@@ -1,5 +1,10 @@
 # nano-db-manager
-Backup/restore nano databases EventStore and Mongo DB.
+Backup/restore nano databases EventStore and Mongo DB.  
+"nano-db-manager" can: 
+- backup current nano databases state
+- restore latest backup
+
+You should backup first your current nano database state with "nano-db-manager" before running restore action.
 
 ## Configuration
 This application provides executable JAR.  
