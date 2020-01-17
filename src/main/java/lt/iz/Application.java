@@ -5,6 +5,7 @@ import lt.iz.file.BackupManager;
 import lt.iz.file.WinBackupManager;
 import lt.iz.service.ServiceManager;
 import lt.iz.service.WinServiceManager;
+import lt.iz.tracker.TimeTracker;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,8 @@ public class Application {
             ServiceManager serviceManager = new WinServiceManager(params.eventStore.serviceName, params.mongo.serviceName);
             BackupManager backupManager = new WinBackupManager(params.backupDir, params.eventStore.directory, params.mongo.directory);
 
+            TimeTracker processTimeTracker = TimeTracker.start();
+
             serviceManager.stopMongoService();
             serviceManager.stopEventStoreService();
 
@@ -38,7 +41,7 @@ public class Application {
             serviceManager.startEventStoreService();
             serviceManager.startMongoService();
 
-            log("*** SUCCESS ***");
+            log("*** SUCCESS ***", processTimeTracker);
 
         } catch (IOException | InterruptedException e) {
             log("*** FAILURE: " + e.getMessage());
@@ -77,5 +80,9 @@ public class Application {
 
     private static void log(String message) {
         System.out.println(message);
+    }
+
+    private static void log(String message, TimeTracker timeTracker) {
+        log(message + " (" + timeTracker.finish() + " sec.)");
     }
 }

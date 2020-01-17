@@ -1,6 +1,7 @@
 package lt.iz.file;
 
 import lt.iz.tracker.TimeTracker;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -70,9 +71,9 @@ public class WinBackupManager implements BackupManager {
         log("Working directory " + workingDir);
         if (workingDir.exists()) delete(workingDir);
 
-        TimeTracker extractTimeTracker = TimeTracker.start();
+        TimeTracker timeTracker = TimeTracker.start();
         Archiver.extract(archive, backupDir);
-        log("Backup archive " + archive + " extracted.", extractTimeTracker);
+        log("Backup archive " + archive + " extracted.", timeTracker);
 
         delete(mongoDatabaseDir);
         log("Mongo database directory " + mongoDatabaseDir + " deleted.");
@@ -83,17 +84,18 @@ public class WinBackupManager implements BackupManager {
         eventStoreDatabaseDir.mkdir();
 
         File eventStoreDatabaseBackupDir = resolveDatabaseBackupDirPath(eventStoreDatabaseDir);
-        TimeTracker esRestoreTimeTracker = TimeTracker.start();
-        copyFolder(eventStoreDatabaseBackupDir, eventStoreDatabaseDir);
-        log("EventStore database backup directory " + eventStoreDatabaseBackupDir + " restored to " + eventStoreDatabaseDir, esRestoreTimeTracker);
+        timeTracker = TimeTracker.start();
+        FileUtils.copyDirectory(eventStoreDatabaseBackupDir, eventStoreDatabaseDir);
+        log("EventStore database backup directory " + eventStoreDatabaseBackupDir + " restored to " + eventStoreDatabaseDir, timeTracker);
 
         File mongoDatabaseBackupDir = resolveDatabaseBackupDirPath(mongoDatabaseDir);
-        TimeTracker mongoRestoreTimeTracker = TimeTracker.start();
-        copyFolder(mongoDatabaseBackupDir, mongoDatabaseDir);
-        log("Mongo database backup directory " + mongoDatabaseBackupDir + " restored to " + mongoDatabaseDir, mongoRestoreTimeTracker);
+        timeTracker = TimeTracker.start();
+        FileUtils.copyDirectory(mongoDatabaseBackupDir, mongoDatabaseDir);
+        log("Mongo database backup directory " + mongoDatabaseBackupDir + " restored to " + mongoDatabaseDir, timeTracker);
 
+        timeTracker = TimeTracker.start();
         delete(workingDir);
-        log("Working directory " + workingDir + " deleted.");
+        log("Working directory " + workingDir + " deleted.", timeTracker);
     }
 
     private File resolveLatestBackupArchive() {
