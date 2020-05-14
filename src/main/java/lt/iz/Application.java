@@ -10,6 +10,8 @@ import lt.iz.tracker.TimeTracker;
 import java.io.File;
 import java.io.IOException;
 
+import static lt.iz.Logger.log;
+
 public class Application {
 
     /*private static Params params = new Params(Action.BACKUP, new File("c:\\development\\backup-nano-db"),
@@ -78,11 +80,4 @@ public class Application {
         return new Params(action, new File(args[5]), eventStore, mongo);
     }
 
-    private static void log(String message) {
-        System.out.println(message);
-    }
-
-    private static void log(String message, TimeTracker timeTracker) {
-        log(message + " (" + timeTracker.finish() + " sec.)");
-    }
 }

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 import static java.time.LocalDateTime.now;
+import static lt.iz.Logger.log;
 
 public class WinServiceManager implements ServiceManager {
 
@@ -32,28 +33,28 @@ public class WinServiceManager implements ServiceManager {
     public void startEventStoreService() throws InterruptedException, IOException {
         TimeTracker timeTracker = TimeTracker.start();
         startService(eventstoreServiceName);
-        log("EventStore service " + eventstoreServiceName + " started.", timeTracker);
+        logService("EventStore service " + eventstoreServiceName + " started.", timeTracker);
     }
 
     @Override
     public void stopEventStoreService() throws InterruptedException, IOException {
         TimeTracker timeTracker = TimeTracker.start();
         stopService(eventstoreServiceName);
-        log("EventStore service " + eventstoreServiceName + " stopped.", timeTracker);
+        logService("EventStore service " + eventstoreServiceName + " stopped.", timeTracker);
     }
 
     @Override
     public void startMongoService() throws InterruptedException, IOException {
         TimeTracker timeTracker = TimeTracker.start();
         startService(mongoServiceName);
-        log("Mongo service " + mongoServiceName + " started.", timeTracker);
+        logService("Mongo service " + mongoServiceName + " started.", timeTracker);
     }
 
     @Override
     public void stopMongoService() throws InterruptedException, IOException {
         TimeTracker timeTracker = TimeTracker.start();
         stopService(mongoServiceName);
-        log("Mongo service " + mongoServiceName + " stopped.", timeTracker);
+        logService("Mongo service " + mongoServiceName + " stopped.", timeTracker);
     }
 
     private Boolean isServiceRunning(String serviceName) throws IOException {
@@ -116,12 +117,12 @@ public class WinServiceManager implements ServiceManager {
         return now().plusSeconds(SERVICE_TIMEOUT_IN_SECONDS);
     }
 
-    private static void log(String message) {
-        System.out.println("/SERVICE/ - " + message);
+    private static void logService(String message) {
+        log("/SERVICE/ - " + message);
     }
 
-    private static void log(String message, TimeTracker timeTracker) {
-        log(message + " (" + timeTracker.finish() + " sec.)");
+    private static void logService(String message, TimeTracker timeTracker) {
+        log("/SERVICE/ - " + message, timeTracker);
     }
 
 }

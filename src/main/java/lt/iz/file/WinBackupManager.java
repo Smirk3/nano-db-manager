@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.time.LocalDateTime.now;
+import static lt.iz.Logger.log;
 
 public class WinBackupManager implements BackupManager {
 
@@ -43,42 +44,42 @@ public class WinBackupManager implements BackupManager {
         File eventStoreDatabaseBackupDir = resolveDatabaseBackupDirPath(eventStoreDatabaseDir);
         TimeTracker esTimeTracker = TimeTracker.start();
         copyFolder(eventStoreDatabaseDir, eventStoreDatabaseBackupDir, eventStoreDatabaseDir + File.separator + "log");
-        log("EventStore database directory " + eventStoreDatabaseDir + " copied to " + eventStoreDatabaseBackupDir, esTimeTracker);
+        logFile("EventStore database directory " + eventStoreDatabaseDir + " copied to " + eventStoreDatabaseBackupDir, esTimeTracker);
 
         File mongoDatabaseBackupDir = resolveDatabaseBackupDirPath(mongoDatabaseDir);
         TimeTracker mongoTimeTracker = TimeTracker.start();
         copyFolder(mongoDatabaseDir, mongoDatabaseBackupDir);
-        log("Mongo database directory " + mongoDatabaseDir + " copied to " + mongoDatabaseBackupDir, mongoTimeTracker);
+        logFile("Mongo database directory " + mongoDatabaseDir + " copied to " + mongoDatabaseBackupDir, mongoTimeTracker);
 
         TimeTracker compressTimeTracker = TimeTracker.start();
         Archiver.compress(workingDir);
-        log("Working directory " + workingDir + " compressed.", compressTimeTracker);
+        logFile("Working directory " + workingDir + " compressed.", compressTimeTracker);
 
         TimeTracker deleteTimeTracker = TimeTracker.start();
         delete(workingDir);
-        log("Working directory " + workingDir + " deleted.", deleteTimeTracker);
+        logFile("Working directory " + workingDir + " deleted.", deleteTimeTracker);
     }
 
     @Override
     public void restoreLatest() throws IOException {
         TimeTracker findTimeTracker = TimeTracker.start();
         File archive = resolveLatestBackupArchive();
-        log("Found latest buckup archive: " + archive, findTimeTracker);
+        logFile("Found latest buckup archive: " + archive, findTimeTracker);
 
         if (archive == null) throw new RuntimeException("Backup archive not found.");
 
         workingDir = new File(archive.toString().substring(0, archive.toString().indexOf(".")));
-        log("Working directory " + workingDir);
+        logFile("Working directory " + workingDir);
         if (workingDir.exists()) delete(workingDir);
 
         TimeTracker timeTracker = TimeTracker.start();
         Archiver.extract(archive, backupDir);
-        log("Backup archive " + archive + " extracted.", timeTracker);
+        logFile("Backup archive " + archive + " extracted.", timeTracker);
 
         delete(mongoDatabaseDir);
-        log("Mongo database directory " + mongoDatabaseDir + " deleted.");
+        logFile("Mongo database directory " + mongoDatabaseDir + " deleted.");
         delete(eventStoreDatabaseDir);
-        log("EventStore database directory " + eventStoreDatabaseDir + " deleted.");
+        logFile("EventStore database directory " + eventStoreDatabaseDir + " deleted.");
 
         mongoDatabaseDir.mkdir();
         eventStoreDatabaseDir.mkdir();
@@ -86,16 +87,16 @@ public class WinBackupManager implements BackupManager {
         File eventStoreDatabaseBackupDir = resolveDatabaseBackupDirPath(eventStoreDatabaseDir);
         timeTracker = TimeTracker.start();
         FileUtils.copyDirectory(eventStoreDatabaseBackupDir, eventStoreDatabaseDir);
-        log("EventStore database backup directory " + eventStoreDatabaseBackupDir + " restored to " + eventStoreDatabaseDir, timeTracker);
+        logFile("EventStore database backup directory " + eventStoreDatabaseBackupDir + " restored to " + eventStoreDatabaseDir, timeTracker);
 
         File mongoDatabaseBackupDir = resolveDatabaseBackupDirPath(mongoDatabaseDir);
         timeTracker = TimeTracker.start();
         FileUtils.copyDirectory(mongoDatabaseBackupDir, mongoDatabaseDir);
-        log("Mongo database backup directory " + mongoDatabaseBackupDir + " restored to " + mongoDatabaseDir, timeTracker);
+        logFile("Mongo database backup directory " + mongoDatabaseBackupDir + " restored to " + mongoDatabaseDir, timeTracker);
 
         timeTracker = TimeTracker.start();
         delete(workingDir);
-        log("Working directory " + workingDir + " deleted.", timeTracker);
+        logFile("Working directory " + workingDir + " deleted.", timeTracker);
     }
 
     private File resolveLatestBackupArchive() {
@@ -119,7 +120,7 @@ public class WinBackupManager implements BackupManager {
     private static File resolveCurrentBackupDirPath(File backupDir) {
         File dir = new File(backupDir + File.separator + BACKUP_DIR_NAME_PREFIX + now().format(DATE_FORMATTER));
         dir.mkdir();
-        log("Working directory " + dir + " created.");
+        logFile("Working directory " + dir + " created.");
         return dir;
     }
 
@@ -186,11 +187,11 @@ public class WinBackupManager implements BackupManager {
         }
     }
 
-    private static void log(String message) {
-        System.out.println("/ FILE  / - " + message);
+    private static void logFile(String message) {
+        log("/ FILE  / - " + message);
     }
 
-    private static void log(String message, TimeTracker timeTracker) {
-        log(message + " (" + timeTracker.finish() + " sec.)");
+    private static void logFile(String message, TimeTracker timeTracker) {
+        log("/ FILE  / - " + message, timeTracker);
     }
 }
